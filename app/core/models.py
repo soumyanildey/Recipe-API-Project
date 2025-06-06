@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 
+
 class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
@@ -24,7 +25,6 @@ class UserManager(BaseUserManager):
 
     def get_by_natural_key(self, email):
         return self.get(email=email)
-
 
 
 class User(AbstractBaseUser, PermissionsMixin):
