@@ -14,7 +14,6 @@ RECIPE_URL = reverse("recipe:recipe-list")
 def create_recipe(user, **params):
     '''Create Recipes helper function'''
     default = {
-        'user': user,
         'title': "Sample Recipe",
         'time_minutes': 22,
         'price': Decimal("5.25"),
@@ -22,7 +21,8 @@ def create_recipe(user, **params):
         'link': 'https://example.com/recipe.pdf',
     }
     default.update(params)
-    recipe = Recipe.objects.create(**default)
+    recipe = Recipe.objects.create(user=user, **default)
+    return recipe
 
 
 class PublicRecipeAPITest(TestCase):
@@ -41,11 +41,12 @@ class PrivateRecipeAPITest(TestCase):
     '''Private testcases on Recipe API'''
 
     def setUp(self):
+        self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email='test@example.com',
             password='testpass123',
         )
-        self.client.force_login(user=self.user)
+        self.client.force_authenticate(user=self.user)
 
     def test_retireve_recipe_api(self):
         '''Test for Retrieve Recipe API'''
